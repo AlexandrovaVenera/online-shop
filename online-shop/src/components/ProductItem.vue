@@ -1,12 +1,19 @@
+<script setup>
+defineProps({
+  id: Number,
+  title: String,
+  price: String,
+  imgMain: String
+})
+</script>
+
 <template>
-  <div class="product w-1/4 border border-gray-400 rounded-2xl text-center p-5">
-    <img
-      src="/img/apple/Air-Pods-Pro-Main.png"
-      alt="Air-Pods-Pro-Main.png"
-      class="block mx-auto w-40"
-    />
-    <p class="product__title font-medium mt-4 mb-2.5">Iphone 14 Pro</p>
-    <p class="product__price mb-4">1200$</p>
+  <div class="product border border-gray-400 rounded-2xl text-center p-5" :key="id">
+    <div class="w-40 h-60 m-auto flex items-center">
+      <img :src="imgMain" :alt="title" />
+    </div>
+    <p class="product__title font-medium mt-4 mb-2.5">{{ title }}</p>
+    <p class="product__price mb-4">{{ price }}</p>
     <div class="product__btns flex justify-between">
       <button
         class="transition ease-in-out delay-150 bg-white hover:bg-blue-600 hover:text-white text-gray-800 py-2 px-4 border border-gray-400 rounded"
@@ -21,3 +28,9 @@
     </div>
   </div>
 </template>
+
+<style scoped>
+.product {
+  min-width: 270px;
+}
+</style>
