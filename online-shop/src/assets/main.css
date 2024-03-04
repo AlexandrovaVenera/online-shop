@@ -1,0 +1,21 @@
+@import './base.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Gilroy', sans-serif;
+  src:
+    local('Gilroy'),
+    url('./fonts/gilroy-regular.ttf') format('ttf');
+}
+
+html {
+  font-family: 'Gilroy', sans-serif;
+  font-size: 10px;
+}
+body {
+  max-width: 1440px;
+  margin: auto;
+}
