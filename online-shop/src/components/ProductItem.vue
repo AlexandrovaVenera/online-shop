@@ -2,7 +2,7 @@
 defineProps({
   id: Number,
   title: String,
-  price: String,
+  price: Number,
   imgMain: String
 })
 </script>
@@ -13,7 +13,7 @@ defineProps({
       <img :src="imgMain" :alt="title" />
     </div>
     <p class="product__title font-medium mt-4 mb-2.5">{{ title }}</p>
-    <p class="product__price mb-4">{{ price }}</p>
+    <p class="product__price mb-4">{{ price }}$</p>
     <div class="product__btns flex justify-between">
       <button
         class="transition ease-in-out delay-150 bg-white hover:bg-blue-600 hover:text-white text-gray-800 py-2 px-4 border border-gray-400 rounded"

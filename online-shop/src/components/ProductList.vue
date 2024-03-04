@@ -1,8 +1,37 @@
 <script setup>
-import ProductItem from './ProductItem.vue'
+import { onMounted, reactive, watch, ref } from 'vue'
 
-defineProps({
-  items: Array
+import ProductItem from './ProductItem.vue'
+import axios from 'axios'
+
+const items = ref([])
+
+onMounted(async () => {
+  try {
+    const { data } = await axios.get('https://547a75eee9d7e8e9.mokky.dev/items')
+    items.value = data
+  } catch (e) {}
+})
+
+const filters = reactive({
+  sortBy: '',
+  searchQuery: ''
+})
+
+const onChangeSelect = (event) => {
+  filters.sortBy = event.target.value
+  console.log(filters.sortBy)
+}
+
+watch(filters, async () => {
+  try {
+    console.log('Запуск')
+    const { data } = await axios.get(
+      'https://547a75eee9d7e8e9.mokky.dev/items?sortBy=' + filters.sortBy
+    )
+    items.value = data
+    console.log(items.value)
+  } catch (e) {}
 })
 </script>
 <template>
@@ -13,7 +42,7 @@ defineProps({
       >
         Сбросить фильтры
       </button>
-      <p>Найдено 26 товаров</p>
+      <p>Найдено {{ items.length }} товаров</p>
       <div class="flex">
         <div class="relative mr-5">
           <input
@@ -25,10 +54,10 @@ defineProps({
         </div>
         <div class="flex items-center">
           <span class="mr-3">Отсортировать:</span>
-          <select class="text-blue-600 outline-none">
-            <option class="text-black">сначала дорогие</option>
-            <option class="text-black">сначала дешевые</option>
-            <option class="text-black">по названию</option>
+          <select @change="onChangeSelect" class="text-blue-600 outline-none">
+            <option class="text-black" value="-price">сначала дорогие</option>
+            <option class="text-black" value="price">сначала дешевые</option>
+            <option class="text-black" value="title">по названию</option>
           </select>
         </div>
       </div>
