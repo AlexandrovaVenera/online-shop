@@ -4,6 +4,7 @@ import axios from 'axios'
 import Header from './components/Header.vue'
 import ProductItem from './components/ProductItem.vue'
 import Drawer from './components/Drawer.vue'
+import { useFilterStore } from './stores/FilterStore'
 
 const items = ref([])
 const count = ref(1)
@@ -13,19 +14,17 @@ onMounted(async () => {
     items.value = data
   } catch (e) {}
 })
-const filters = reactive({
-  sortBy: '',
-  searchQuery: ''
-})
+
+const filtersStore = useFilterStore()
 
 const onChangeSelect = (event) => {
-  filters.sortBy = event.target.value
+  filtersStore.setSort(event.target.value)
 }
 
-watch(filters, async () => {
+watch(filtersStore.filters, async () => {
   try {
     const { data } = await axios.get(
-      'https://547a75eee9d7e8e9.mokky.dev/items?sortBy=' + filters.sortBy
+      'https://547a75eee9d7e8e9.mokky.dev/items?sortBy=' + filtersStore.filters.sortBy
     )
     items.value = data
   } catch (e) {}
@@ -34,7 +33,7 @@ watch(filters, async () => {
 
 <template>
   <Header />
-  <!-- <section class="w-full m-auto mt-20 px-9">
+  <section class="w-full m-auto mt-20 px-9">
     <div class="nav flex justify-between items-center mb-5">
       <button
         class="transition ease-in-out delay-150 bg-white hover:bg-blue-600 hover:text-white text-gray-800 py-2 px-4 border border-gray-400 rounded"
@@ -148,8 +147,8 @@ watch(filters, async () => {
         />
       </div>
     </div>
-  </section> -->
-  <Drawer :count="count" />
+  </section>
+  <!-- <Drawer :count="count" /> -->
 </template>
 
 <style scoped>
