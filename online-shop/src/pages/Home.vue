@@ -1,5 +1,7 @@
 <script setup>
-import { onMounted, reactive, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
+import ProductItem from '@/components/ProductItem.vue'
+import { useFilterStore } from '@/stores/FilterStore'
 import axios from 'axios'
 
 const items = ref([])
@@ -8,6 +10,36 @@ onMounted(async () => {
   try {
     const { data } = await axios.get('https://547a75eee9d7e8e9.mokky.dev/items')
     items.value = data
+  } catch (e) {}
+})
+
+const filtersStore = useFilterStore()
+
+const onChangeSelect = (event) => {
+  filtersStore.setSort(event.target.value)
+}
+const onChangeInput = (event) => {
+  filtersStore.setInput(event.target.value)
+}
+
+watch(filtersStore.filters, async () => {
+  try {
+    if (filtersStore.filters.sortBy && filtersStore.filters.searchQuery) {
+      const { data } = await axios.get(
+        `https://547a75eee9d7e8e9.mokky.dev/items?sortBy=${filtersStore.filters.sortBy}&title=*${filtersStore.filters.searchQuery}*`
+      )
+      items.value = data
+    } else if (filtersStore.filters.sortBy) {
+      const { data } = await axios.get(
+        `https://547a75eee9d7e8e9.mokky.dev/items?sortBy=${filtersStore.filters.sortBy}`
+      )
+      items.value = data
+    } else {
+      const { data } = await axios.get(
+        `https://547a75eee9d7e8e9.mokky.dev/items?title=*${filtersStore.filters.searchQuery}*`
+      )
+      items.value = data
+    }
   } catch (e) {}
 })
 </script>
@@ -23,6 +55,7 @@ onMounted(async () => {
       <div class="flex">
         <div class="relative mr-5">
           <input
+            @input="onChangeInput"
             type="text"
             placeholder="Найти товар"
             class="border border-gray-400 rounded pl-3 py-2 w-80 outline-none"
@@ -116,7 +149,7 @@ onMounted(async () => {
           Показать
         </button>
       </div>
-      <div class="product-items w-10/12 flex flex-wrap gap-8 justify-between">
+      <div class="product-items w-10/12 flex flex-wrap gap-8">
         <ProductItem
           v-for="item in items"
           :key="item.id"

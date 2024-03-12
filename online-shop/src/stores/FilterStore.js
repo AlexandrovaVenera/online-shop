@@ -10,5 +10,9 @@ export const useFilterStore = defineStore('filterStore', () => {
   const setSort = (id) => {
     filters.value.sortBy = id
   }
-  return { filters, setSort }
+
+  const setInput = (value) => {
+    filters.value.searchQuery = value
+  }
+  return { filters, setSort, setInput }
 })
